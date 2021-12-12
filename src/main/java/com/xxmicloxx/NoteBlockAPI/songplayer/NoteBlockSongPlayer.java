@@ -2,6 +2,7 @@ package com.xxmicloxx.NoteBlockAPI.songplayer;
 
 import com.xxmicloxx.NoteBlockAPI.NoteBlockAPI;
 import com.xxmicloxx.NoteBlockAPI.SongPlayer;
+import com.xxmicloxx.NoteBlockAPI.event.PlayTickEvent;
 import com.xxmicloxx.NoteBlockAPI.event.PlayerRangeStateChangeEvent;
 import com.xxmicloxx.NoteBlockAPI.model.*;
 import com.xxmicloxx.NoteBlockAPI.utils.CompatibilityUtils;
@@ -79,10 +80,15 @@ public class NoteBlockSongPlayer extends RangeSongPlayer {
 			// not in same world
 			return;
 		}
+
+		PlayTickEvent event = new PlayTickEvent(this, player);
+		Bukkit.getPluginManager().callEvent(event);
+		if(event.isCancelled()) return;
+
 		byte playerVolume = NoteBlockAPI.getPlayerVolume(player);
 		Location loc = noteBlock.getLocation();
 		loc = new Location(loc.getWorld(), loc.getX() + 0.5f, loc.getY() - 0.5f, loc.getZ() + 0.5f);
-		
+
 		for (Layer layer : song.getLayerHashMap().values()) {
 			Note note = layer.getNote(tick);
 			if (note == null) {
