@@ -3,9 +3,12 @@ package com.xxmicloxx.NoteBlockAPI.songplayer;
 import com.xxmicloxx.NoteBlockAPI.model.playmode.ChannelMode;
 import com.xxmicloxx.NoteBlockAPI.model.playmode.MonoMode;
 import com.xxmicloxx.NoteBlockAPI.model.playmode.MonoStereoMode;
+
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import com.xxmicloxx.NoteBlockAPI.NoteBlockAPI;
+import com.xxmicloxx.NoteBlockAPI.event.PlayTickEvent;
 import com.xxmicloxx.NoteBlockAPI.model.Layer;
 import com.xxmicloxx.NoteBlockAPI.model.Note;
 import com.xxmicloxx.NoteBlockAPI.model.Playlist;
@@ -47,6 +50,10 @@ public class RadioSongPlayer extends SongPlayer {
 	@Override
 	public void playTick(Player player, int tick) {
 		byte playerVolume = NoteBlockAPI.getPlayerVolume(player);
+
+		PlayTickEvent event = new PlayTickEvent(this, player);
+		Bukkit.getPluginManager().callEvent(event);
+		if(event.isCancelled()) return;
 
 		for (Layer layer : song.getLayerHashMap().values()) {
 			Note note = layer.getNote(tick);
