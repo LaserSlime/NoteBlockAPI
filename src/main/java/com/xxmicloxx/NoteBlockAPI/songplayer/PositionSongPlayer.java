@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 
 import com.xxmicloxx.NoteBlockAPI.NoteBlockAPI;
 import com.xxmicloxx.NoteBlockAPI.SongPlayer;
+import com.xxmicloxx.NoteBlockAPI.event.PlayTickEvent;
 import com.xxmicloxx.NoteBlockAPI.event.PlayerRangeStateChangeEvent;
 import com.xxmicloxx.NoteBlockAPI.model.Layer;
 import com.xxmicloxx.NoteBlockAPI.model.Note;
@@ -77,6 +78,10 @@ public class PositionSongPlayer extends RangeSongPlayer {
 		if (!player.getWorld().getName().equals(targetLocation.getWorld().getName())) {
 			return; // not in same world
 		}
+
+		PlayTickEvent event = new PlayTickEvent(this, player);
+		Bukkit.getPluginManager().callEvent(event);
+		if(event.isCancelled()) return;
 
 		byte playerVolume = NoteBlockAPI.getPlayerVolume(player);
 

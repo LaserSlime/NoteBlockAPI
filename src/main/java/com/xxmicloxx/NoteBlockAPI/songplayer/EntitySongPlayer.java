@@ -1,6 +1,7 @@
 package com.xxmicloxx.NoteBlockAPI.songplayer;
 
 import com.xxmicloxx.NoteBlockAPI.NoteBlockAPI;
+import com.xxmicloxx.NoteBlockAPI.event.PlayTickEvent;
 import com.xxmicloxx.NoteBlockAPI.event.PlayerRangeStateChangeEvent;
 import com.xxmicloxx.NoteBlockAPI.model.*;
 import org.bukkit.Bukkit;
@@ -65,6 +66,10 @@ public class EntitySongPlayer extends RangeSongPlayer {
         if (!player.getWorld().getName().equals(entity.getWorld().getName())) {
             return; // not in same world
         }
+
+        PlayTickEvent event = new PlayTickEvent(this, player);
+		Bukkit.getPluginManager().callEvent(event);
+		if(event.isCancelled()) return;
 
         byte playerVolume = NoteBlockAPI.getPlayerVolume(player);
 
